@@ -153,7 +153,9 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
 
       {/* Date */}
       <FormField label="Ngày nộp" required hint="Không thể chọn ngày trong tương lai">
-        <input type="date" value={date} max={todayISO()} onChange={e => setDate(e.target.value)} className={cn(inputClass, "cursor-pointer max-w-full box-border")} />
+        <div className="overflow-hidden w-full">
+          <input type="date" value={date} max={todayISO()} onChange={e => setDate(e.target.value)} className={cn(inputClass, "cursor-pointer w-full min-w-0")} style={{ width: '100%' }} />
+        </div>
       </FormField>
 
       {/* Đợt thu */}
