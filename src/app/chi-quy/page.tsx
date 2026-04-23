@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PlusIcon, ArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { PageHeader } from "@/components/shared/page-header";
-import { useTransactions, useDeleteTransaction } from "@/hooks/use-transactions";
+import { useTransactions, useDeleteTransaction, useResetTransactions } from "@/hooks/use-transactions";
 import { formatVND } from "@/lib/format";
 import { useState } from "react";
 import type { Transaction } from "@/types";
@@ -23,6 +23,13 @@ export default function ChiQuyPage() {
   const expenses = data?.data ?? [];
 
   const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null);
+  const [showReset, setShowReset] = useState(false);
+  const resetTransactions = useResetTransactions();
+
+  const handleReset = async () => {
+    await resetTransactions.mutateAsync('expense');
+    setShowReset(false);
+  };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -38,7 +45,17 @@ export default function ChiQuyPage() {
 
   return (
     <>
-      <PageHeader title="Chi quỹ" subtitle="Lịch sử khoản chi" />
+      <PageHeader title="Chi quỹ" subtitle="Lịch sử khoản chi">
+        {expenses.length > 0 && (
+          <button
+            onClick={() => setShowReset(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 border border-red-100 text-red-500 text-[12px] font-semibold hover:bg-red-100 transition-colors cursor-pointer"
+          >
+            <TrashIcon className="w-3.5 h-3.5" />
+            Xoá tất cả
+          </button>
+        )}
+      </PageHeader>
 
       <div className="px-4 pb-24 page-in">
         {isLoading && (
@@ -132,6 +149,29 @@ export default function ChiQuyPage() {
           </Link>
         </div>
       </div>
+
+      {/* Reset confirm sheet */}
+      {showReset && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center" onClick={() => setShowReset(false)}>
+          <div className="bg-white rounded-t-3xl w-full max-w-sm p-6 pb-10 space-y-4" onClick={e => e.stopPropagation()}>
+            <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto" />
+            <h3 className="text-[15px] font-bold text-slate-800 text-center">Xoá toàn bộ khoản chi?</h3>
+            <p className="text-[13px] text-slate-500 text-center leading-relaxed">
+              Tất cả <strong>{expenses.length}</strong> khoản chi sẽ bị xoá vĩnh viễn. Số dư quỹ sẽ thay đổi theo.
+            </p>
+            <div className="flex gap-3 pt-1">
+              <button onClick={() => setShowReset(false)} className="flex-1 py-4 rounded-2xl border-2 border-slate-200 text-[13px] font-semibold text-slate-600 cursor-pointer">Huỷ</button>
+              <button
+                onClick={handleReset}
+                disabled={resetTransactions.isPending}
+                className="flex-1 py-4 rounded-2xl bg-red-500 text-white text-[13px] font-bold hover:bg-red-600 disabled:opacity-60 cursor-pointer"
+              >
+                {resetTransactions.isPending ? "Đang xoá..." : "Xoá tất cả"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete confirm sheet */}
       {deleteTarget && (

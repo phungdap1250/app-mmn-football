@@ -170,6 +170,25 @@ export function useUpdateTransaction() {
   })
 }
 
+export function useResetTransactions() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (type: 'income' | 'expense') => {
+      const res = await fetch(`/api/transactions/reset?type=${type}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error ?? 'Lỗi khi xoá dữ liệu')
+      }
+      return res.json()
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['dotThuList'] })
+    },
+  })
+}
+
 export function useDeleteTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
