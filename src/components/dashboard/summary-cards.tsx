@@ -38,9 +38,9 @@ export function SummaryCards({ totalIncome, totalExpense, recentTransactions = [
         {expenseItems.length > 0 && (
           <div className="mt-2.5 space-y-1.5 border-t border-slate-100 pt-2.5">
             {expenseItems.map(tx => (
-              <div key={tx.id} className="flex items-start gap-1">
-                <span className="text-[11px] font-bold text-expense shrink-0">-{formatVND(tx.amount)}</span>
-                <span className="text-[10px] text-slate-400 leading-tight">({tx.label})</span>
+              <div key={tx.id}>
+                <p className="text-[11px] font-bold text-expense">-{formatVND(tx.amount)}</p>
+                <p className="text-[10px] text-slate-400 truncate">{tx.label}</p>
               </div>
             ))}
           </div>
