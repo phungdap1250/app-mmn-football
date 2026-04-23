@@ -27,7 +27,7 @@ export default function DashboardPage() {
   return (
     <div className="page-in">
       <BalanceHero balance={data.currentBalance} clubName={data.fundName} />
-      <SummaryCards totalIncome={data.summary.totalIncome} totalExpense={data.summary.totalExpense} />
+      <SummaryCards totalIncome={data.summary.totalIncome} totalExpense={data.summary.totalExpense} recentTransactions={data.recentTransactions} />
 
       <div className="px-4 mt-5">
         <h2 className="text-[13px] font-bold text-slate-700">Giao dịch gần đây</h2>

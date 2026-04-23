@@ -1,14 +1,18 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/solid";
 import { formatVND } from "@/lib/format";
+import type { RecentTransaction } from "@/types";
 
 interface SummaryCardsProps {
   totalIncome: number;
   totalExpense: number;
+  recentTransactions?: RecentTransaction[];
 }
 
-export function SummaryCards({ totalIncome, totalExpense }: SummaryCardsProps) {
+export function SummaryCards({ totalIncome, totalExpense, recentTransactions = [] }: SummaryCardsProps) {
+  const expenseItems = recentTransactions.filter(t => t.type === 'expense');
+
   return (
-    <div className="px-4 -mt-8 relative z-10 grid grid-cols-2 gap-3">
+    <div className="px-4 -mt-8 relative z-10 grid grid-cols-2 gap-3 items-start">
       {/* Income card */}
       <div className="bg-white rounded-2xl p-4 shadow-md border border-income-border">
         <div className="flex items-center gap-2 mb-2.5">
@@ -29,6 +33,18 @@ export function SummaryCards({ totalIncome, totalExpense }: SummaryCardsProps) {
           <span className="text-[11px] font-semibold text-slate-500">Tổng chi</span>
         </div>
         <p className="text-[15px] font-bold text-slate-800">{formatVND(totalExpense)}</p>
+
+        {/* Breakdown từng khoản chi */}
+        {expenseItems.length > 0 && (
+          <div className="mt-2.5 space-y-1.5 border-t border-slate-100 pt-2.5">
+            {expenseItems.map(tx => (
+              <div key={tx.id} className="flex items-start gap-1">
+                <span className="text-[11px] font-bold text-expense shrink-0">-{formatVND(tx.amount)}</span>
+                <span className="text-[10px] text-slate-400 leading-tight">({tx.label})</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
