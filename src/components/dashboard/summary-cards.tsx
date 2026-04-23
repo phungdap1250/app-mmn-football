@@ -12,40 +12,46 @@ export function SummaryCards({ totalIncome, totalExpense, recentTransactions = [
   const expenseItems = recentTransactions.filter(t => t.type === 'expense');
 
   return (
-    <div className="px-4 -mt-8 relative z-10 grid grid-cols-2 gap-3 items-start">
-      {/* Income card */}
-      <div className="bg-white rounded-2xl p-4 shadow-md border border-income-border">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-7 h-7 rounded-full bg-income-bg flex items-center justify-center shrink-0">
-            <ArrowDownIcon className="w-3.5 h-3.5 text-income" />
+    <div className="px-4 -mt-8 relative z-10 flex flex-col gap-3">
+      {/* Row: Thu + Chi side by side */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Income card */}
+        <div className="bg-white rounded-2xl p-4 shadow-md border border-income-border flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-income-bg flex items-center justify-center shrink-0">
+            <ArrowDownIcon className="w-4 h-4 text-income" />
           </div>
-          <span className="text-[11px] font-semibold text-slate-500">Tổng thu</span>
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-slate-400">Tổng thu</p>
+            <p className="text-[15px] font-bold text-slate-800 truncate">{formatVND(totalIncome)}</p>
+          </div>
         </div>
-        <p className="text-[15px] font-bold text-slate-800">{formatVND(totalIncome)}</p>
+
+        {/* Expense card */}
+        <div className="bg-white rounded-2xl p-4 shadow-md border border-expense-border flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-expense-bg flex items-center justify-center shrink-0">
+            <ArrowUpIcon className="w-4 h-4 text-expense" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-slate-400">Tổng chi</p>
+            <p className="text-[15px] font-bold text-slate-800 truncate">{formatVND(totalExpense)}</p>
+          </div>
+        </div>
       </div>
 
-      {/* Expense card */}
-      <div className="bg-white rounded-2xl p-4 shadow-md border border-expense-border">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-7 h-7 rounded-full bg-expense-bg flex items-center justify-center shrink-0">
-            <ArrowUpIcon className="w-3.5 h-3.5 text-expense" />
-          </div>
-          <span className="text-[11px] font-semibold text-slate-500">Tổng chi</span>
-        </div>
-        <p className="text-[15px] font-bold text-slate-800">{formatVND(totalExpense)}</p>
-
-        {/* Breakdown từng khoản chi */}
-        {expenseItems.length > 0 && (
-          <div className="mt-2.5 space-y-1.5 border-t border-slate-100 pt-2.5">
+      {/* Expense breakdown — full width card bên dưới */}
+      {expenseItems.length > 0 && (
+        <div className="bg-white rounded-2xl px-4 py-3.5 shadow-md border border-expense-border">
+          <p className="text-[11px] font-bold text-slate-400 mb-2.5 uppercase tracking-wide">Chi tiết khoản chi</p>
+          <div className="space-y-2">
             {expenseItems.map(tx => (
-              <div key={tx.id}>
-                <p className="text-[11px] font-bold text-expense">-{formatVND(tx.amount)}</p>
-                <p className="text-[10px] text-slate-400 truncate">{tx.label}</p>
+              <div key={tx.id} className="flex items-center justify-between gap-2">
+                <p className="text-[12px] text-slate-600 truncate flex-1">{tx.label}</p>
+                <p className="text-[13px] font-bold text-expense shrink-0">-{formatVND(tx.amount)}</p>
               </div>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
