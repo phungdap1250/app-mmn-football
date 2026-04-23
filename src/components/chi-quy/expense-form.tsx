@@ -126,8 +126,26 @@ export function ExpenseForm({ editTx }: ExpenseFormProps) {
           />
           <span className="absolute inset-y-0 right-4 flex items-center text-[13px] font-semibold text-slate-400 pointer-events-none">đ</span>
         </div>
-        {amountNum > 0 && (
-          <p className="text-[11px] text-expense font-medium">
+        {/* Gợi ý nhanh */}
+        <div className="flex gap-2 mt-2 flex-wrap">
+          {[150000, 175000, 200000, 350000].map(preset => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => { setAmount(String(preset)); setErrors(p => ({ ...p, amount: "" })); }}
+              className={cn(
+                "flex-1 py-2 rounded-xl border text-[12px] font-semibold transition-colors cursor-pointer",
+                amountNum === preset
+                  ? "bg-expense text-white border-expense"
+                  : "bg-slate-50 text-slate-600 border-slate-200 hover:border-expense hover:text-expense"
+              )}
+            >
+              {formatVND(preset)}
+            </button>
+          ))}
+        </div>
+        {amountNum > 0 && ![150000, 175000, 200000, 350000].includes(amountNum) && (
+          <p className="text-[11px] text-expense font-medium mt-1">
             <CheckCircleIcon className="inline w-3.5 h-3.5 mr-0.5 -mt-0.5" />
             {formatVND(amountNum)}
           </p>
