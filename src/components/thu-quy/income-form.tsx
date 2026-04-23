@@ -179,13 +179,6 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
         <p className="text-[11px] text-slate-400 mt-1">Nhập tên đợt thu để gắn vào giao dịch này</p>
       </FormField>
 
-      {/* Note */}
-      <FormField label="Lý do" optional>
-        <div className="relative">
-          <textarea placeholder="VD: Đóng quỹ tháng 4..." maxLength={200} rows={3} value={note} onChange={e => setNote(e.target.value)} className={cn(inputClass, "resize-none")} />
-          <span className="absolute bottom-3 right-3.5 text-[10px] text-slate-300">{note.length}/200</span>
-        </div>
-      </FormField>
 
       {/* Actions */}
       <div className="flex gap-3 pt-1">
