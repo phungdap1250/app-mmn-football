@@ -39,6 +39,32 @@ export function useIncomeByDateRange(from: string, to: string) {
   })
 }
 
+/** Lấy danh sách đợt thu đã có (distinct) */
+export function useDotThuList() {
+  return useQuery({
+    queryKey: ['dotThuList'],
+    queryFn: async () => {
+      const res = await fetch('/api/transactions/dot-thu-list')
+      if (!res.ok) throw new Error('Không thể tải danh sách đợt thu')
+      return res.json() as Promise<string[]>
+    },
+  })
+}
+
+/** Lấy tất cả khoản thu theo đợt thu */
+export function useIncomeByDotThu(dotThu: string) {
+  return useQuery({
+    queryKey: ['transactions', 'dotThu', dotThu],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions?type=income&dot_thu=${encodeURIComponent(dotThu)}&limit=500`)
+      if (!res.ok) throw new Error('Không thể tải dữ liệu')
+      const json = await res.json()
+      return (json.data as any[]).map(normalise) as Transaction[]
+    },
+    enabled: !!dotThu,
+  })
+}
+
 function normalise(t: any): Transaction {
   return {
     id: t.id,
@@ -48,6 +74,7 @@ function normalise(t: any): Transaction {
     note: t.note,
     memberId: t.member_id,
     memberNameSnapshot: t.member_name_snapshot,
+    dotThu: t.dot_thu ?? null,
     category: t.category,
     categoryCustom: t.category_custom,
     matchResult: t.match_result,

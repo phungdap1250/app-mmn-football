@@ -7,7 +7,13 @@ import { FormField, inputClass } from "@/components/shared/form-field";
 import { formatVND, todayISO } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useMembers } from "@/hooks/use-members";
-import { useCreateTransaction, useUpdateTransaction } from "@/hooks/use-transactions";
+import { useCreateTransaction, useUpdateTransaction, useDotThuList } from "@/hooks/use-transactions";
+
+/** Tạo tên đợt mặc định theo tháng hiện tại, VD: "Đợt 4/2026" */
+function defaultDotThu(): string {
+  const now = new Date()
+  return `Đợt ${now.getMonth() + 1}/${now.getFullYear()}`
+}
 import type { Transaction } from "@/types";
 
 interface IncomeFormProps {
@@ -22,6 +28,7 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
   // isFetching bao gồm cả background refetch (stale-while-revalidate)
   // → dropdown luôn disabled cho đến khi có data mới nhất
   const { data: members = [], isFetching: membersLoading } = useMembers();
+  const { data: dotThuList = [] } = useDotThuList();
   const createTx = useCreateTransaction();
   const updateTx = useUpdateTransaction();
 
@@ -29,6 +36,7 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
   const [amount,   setAmount]   = useState(editTx ? String(editTx.amount) : "");
   const [date,     setDate]     = useState(editTx?.date ?? todayISO());
   const [note,     setNote]     = useState(editTx?.note ?? "");
+  const [dotThu,   setDotThu]   = useState(editTx?.dotThu ?? defaultDotThu());
   const [errors,   setErrors]   = useState<Record<string, string>>({});
 
   const amountNum = parseInt(amount, 10) || 0;
@@ -57,6 +65,7 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
           date,
           note: note.trim() || undefined,
           memberId,
+          dotThu: dotThu.trim() || undefined,
           idempotencyKey: crypto.randomUUID(),
         });
       }
@@ -127,6 +136,22 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
       {/* Date */}
       <FormField label="Ngày nộp" required hint="Không thể chọn ngày trong tương lai">
         <input type="date" value={date} max={todayISO()} onChange={e => setDate(e.target.value)} className={cn(inputClass, "cursor-pointer")} />
+      </FormField>
+
+      {/* Đợt thu */}
+      <FormField label="Đợt thu" required>
+        <input
+          type="text"
+          list="dot-thu-suggestions"
+          value={dotThu}
+          onChange={e => setDotThu(e.target.value)}
+          placeholder="VD: Đợt 4/2026"
+          className={cn(inputClass)}
+        />
+        <datalist id="dot-thu-suggestions">
+          {dotThuList.map(d => <option key={d} value={d} />)}
+        </datalist>
+        <p className="text-[11px] text-slate-400 mt-1">Nhập tên đợt thu để gắn vào giao dịch này</p>
       </FormField>
 
       {/* Note */}

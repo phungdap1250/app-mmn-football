@@ -37,6 +37,10 @@ export async function GET(req: NextRequest) {
     if (from) query = query.gte('date', from)
     if (to) query = query.lte('date', to)
 
+    // Lọc theo đợt thu
+    const dotThu = searchParams.get('dot_thu')
+    if (dotThu) query = query.eq('dot_thu', dotThu)
+
     const { data, count, error } = await query
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
@@ -102,6 +106,7 @@ export async function POST(req: NextRequest) {
           note: body.note ?? null,
           member_id: body.memberId ?? null,
           member_name_snapshot: memberNameSnapshot,
+          dot_thu: body.type === 'income' ? (body.dotThu ?? null) : null,
           category: body.category ?? null,
           category_custom: body.categoryCustom ?? null,
           match_result: body.matchResult ?? (body.type === 'expense' ? 'Không liên quan đến trận' : null),

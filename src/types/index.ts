@@ -22,6 +22,7 @@ export interface Transaction {
   // Income
   memberId: string | null
   memberNameSnapshot: string | null
+  dotThu: string | null  // Đợt thu, VD: "Đợt 4/2026"
   // Expense
   category: ExpenseCategory | null
   categoryCustom: string | null
@@ -81,6 +82,7 @@ export interface CreateTransactionInput {
   idempotencyKey: string
   // income
   memberId?: string
+  dotThu?: string
   // expense
   category?: ExpenseCategory
   categoryCustom?: string
