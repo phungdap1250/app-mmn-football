@@ -54,14 +54,16 @@ export default function ThuQuyPage() {
         {/* Shortcut kiểm tra đợt thu */}
         <Link
           href="/kiem-tra-dot"
-          className="flex items-center gap-3 bg-income-bg border border-income/20 rounded-2xl px-4 py-3 mt-3 mb-1"
+          className="flex items-center gap-3 bg-primary rounded-2xl px-4 py-3.5 mt-3 mb-1 shadow-md active:opacity-90 transition-opacity"
         >
-          <ClipboardDocumentCheckIcon className="w-5 h-5 text-income shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-slate-700">Kiểm tra đợt thu</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Xem ai đã nộp / chưa nộp</p>
+          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <ClipboardDocumentCheckIcon className="w-5 h-5 text-white" />
           </div>
-          <span className="text-[11px] text-income font-semibold shrink-0">Xem →</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-white">Kiểm tra đợt thu</p>
+            <p className="text-[11px] text-white/70 mt-0.5">Xem ai đã nộp / chưa nộp</p>
+          </div>
+          <span className="text-[13px] text-white font-bold shrink-0">Xem →</span>
         </Link>
         {isLoading && (
           <div className="flex justify-center py-12">
