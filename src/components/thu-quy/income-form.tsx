@@ -15,6 +15,93 @@ function defaultDotThu(): string {
   return `Đợt ${now.getMonth() + 1}/${now.getFullYear()}`
 }
 import type { Transaction } from "@/types";
+import type { Member } from "@/types";
+
+/** Custom dropdown chọn thành viên — có 2 màu xen kẽ, dễ nhìn */
+function MemberPicker({
+  members, loading, value, onChange, hasError,
+}: {
+  members: Member[];
+  loading: boolean;
+  value: string;
+  onChange: (id: string) => void;
+  hasError?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = members.find(m => m.id === value);
+
+  return (
+    <div className="relative">
+      {/* Trigger button */}
+      <button
+        type="button"
+        disabled={loading}
+        onClick={() => setOpen(o => !o)}
+        className={cn(
+          inputClass,
+          "w-full flex items-center justify-between cursor-pointer text-left",
+          hasError && "border-red-400",
+          !selected && "text-slate-400",
+        )}
+      >
+        <span className={cn("text-[14px]", selected ? "text-slate-800 font-medium" : "text-slate-400")}>
+          {loading ? "Đang tải..." : selected ? `${selected.name}${selected.jerseyNumber ? ` · #${selected.jerseyNumber}` : ""}` : "-- Chọn thành viên --"}
+        </span>
+        <svg viewBox="0 0 20 20" fill="currentColor" className={cn("w-4 h-4 text-slate-400 shrink-0 transition-transform", open && "rotate-180")}>
+          <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+        </svg>
+      </button>
+
+      {/* Dropdown list */}
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute left-0 right-0 top-full mt-1 z-40 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden max-h-64 overflow-y-auto">
+            {members.map((m, idx) => {
+              const isSelected = m.id === value;
+              const isEven = idx % 2 === 0;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => { onChange(m.id); setOpen(false); }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
+                    isSelected
+                      ? "bg-primary/10 text-primary font-bold"
+                      : isEven
+                        ? "bg-white hover:bg-slate-50 text-slate-700"
+                        : "bg-slate-50 hover:bg-slate-100 text-slate-700",
+                  )}
+                >
+                  {/* Avatar vòng tròn */}
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0",
+                    isSelected ? "bg-primary text-white" : "bg-slate-200 text-slate-600"
+                  )}>
+                    {m.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold truncate">{m.name}</p>
+                    {m.jerseyNumber && (
+                      <p className="text-[11px] text-slate-400">#{m.jerseyNumber}</p>
+                    )}
+                  </div>
+                  {isSelected && (
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-primary shrink-0">
+                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 interface IncomeFormProps {
   /** Truyền vào khi đang sửa giao dịch đã có */
@@ -90,28 +177,15 @@ export function IncomeForm({ editTx }: IncomeFormProps) {
         <BanknotesIcon className="w-9 h-9 text-income/20" />
       </div>
 
-      {/* Member selector */}
+      {/* Member selector — custom dropdown */}
       <FormField label="Người nộp" required error={errors.member}>
-        <div className="relative">
-          <select
-            value={memberId}
-            onChange={e => { setMemberId(e.target.value); setErrors(p => ({ ...p, member: "" })); }}
-            disabled={membersLoading}
-            className={cn(inputClass, "appearance-none pr-10 cursor-pointer", errors.member && "border-red-400")}
-          >
-            <option value="">{membersLoading ? "Đang tải..." : "-- Chọn thành viên --"}</option>
-            {members.map(m => (
-              <option key={m.id} value={m.id}>
-                {m.name}{m.jerseyNumber ? ` · #${m.jerseyNumber}` : ""}
-              </option>
-            ))}
-          </select>
-          <span className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-slate-400">
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-              <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-            </svg>
-          </span>
-        </div>
+        <MemberPicker
+          members={members}
+          loading={membersLoading}
+          value={memberId}
+          onChange={id => { setMemberId(id); setErrors(p => ({ ...p, member: "" })); }}
+          hasError={!!errors.member}
+        />
       </FormField>
 
       {/* Amount */}
