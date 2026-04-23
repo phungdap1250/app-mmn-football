@@ -1,0 +1,61 @@
+@import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  /* Thin custom scrollbar */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+}
+
+@layer base {
+  :root {
+    /* ── Brand tokens (green football theme) ── */
+    --primary:        #16a34a;
+    --primary-dark:   #15803d;
+    --primary-muted:  #dcfce7;
+    --income:         #16a34a;
+    --income-bg:      #f0fdf4;
+    --income-border:  #bbf7d0;
+    --expense:        #dc2626;
+    --expense-bg:     #fef2f2;
+    --expense-border: #fecaca;
+
+    /* shadcn compat */
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #16a34a;
+    --radius: 1rem;
+    --destructive: #dc2626;
+  }
+  * { @apply border-border; }
+  body {
+    font-family: "Be Vietnam Pro", sans-serif;
+    @apply bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Remove number input arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+}
+
+/* Page fade-in */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-in { animation: page-in 0.2s ease-out; }
