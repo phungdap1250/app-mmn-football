@@ -207,12 +207,6 @@ export function ExpenseForm({ editTx }: ExpenseFormProps) {
         </div>
       </FormField>
 
-      <FormField label="Ghi chú" optional>
-        <div className="relative">
-          <textarea placeholder="VD: Sân Phú Thọ..." maxLength={200} rows={3} value={note} onChange={e => setNote(e.target.value)} className={cn(inputClass, "resize-none")} />
-          <span className="absolute bottom-3 right-3.5 text-[10px] text-slate-300">{note.length}/200</span>
-        </div>
-      </FormField>
 
       <div className="flex gap-3 pt-1">
         <button type="button" onClick={() => router.push("/chi-quy")} className="flex-1 py-4 rounded-2xl border-2 border-slate-200 text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer">
