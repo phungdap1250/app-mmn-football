@@ -11,7 +11,7 @@ export function BalanceHero({ balance, clubName }: BalanceHeroProps) {
   const isNegative = balance < 0;
 
   return (
-    <div className={`relative overflow-hidden px-5 pt-12 pb-16 ${isNegative ? "bg-red-600" : "bg-primary"}`}>
+    <div className={`relative overflow-hidden px-5 pt-8 pb-14 ${isNegative ? "bg-red-600" : "bg-primary"}`}>
       {/* Decorative background circles */}
       <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
       <div className="absolute top-12 -right-2 w-20 h-20 rounded-full bg-white/10 pointer-events-none" />
@@ -23,14 +23,14 @@ export function BalanceHero({ balance, clubName }: BalanceHeroProps) {
       </div>
 
       {/* Balance */}
-      <div className="relative z-10 mt-5">
+      <div className="relative z-10 mt-4">
         <p className="text-white/60 text-xs font-medium">Số dư hiện tại</p>
-        <div className="flex items-baseline gap-1.5 mt-1">
-          <span className={`text-[38px] font-extrabold leading-none tracking-tight ${isNegative ? "text-red-100" : "text-white"}`}>
+        <div className="flex items-baseline gap-2 mt-1">
+          <span className={`text-[52px] font-extrabold leading-none tracking-tight ${isNegative ? "text-red-100" : "text-white"}`}>
             {balance < 0 ? "-" : ""}
             {Math.abs(balance).toLocaleString("vi-VN")}
           </span>
-          <span className="text-xl font-semibold text-white/70">đ</span>
+          <span className="text-2xl font-semibold text-white/70">đ</span>
         </div>
 
         {/* Negative badge */}
