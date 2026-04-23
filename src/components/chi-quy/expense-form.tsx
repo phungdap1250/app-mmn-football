@@ -135,7 +135,7 @@ export function ExpenseForm({ editTx }: ExpenseFormProps) {
       </FormField>
 
       <FormField label="Ngày chi" required hint="Không thể chọn ngày trong tương lai">
-        <input type="date" value={date} max={todayISO()} onChange={e => setDate(e.target.value)} className={cn(inputClass, "cursor-pointer")} />
+        <input type="date" value={date} max={todayISO()} onChange={e => setDate(e.target.value)} className={cn(inputClass, "cursor-pointer max-w-full box-border")} />
       </FormField>
 
       <FormField label="Hạng mục" required error={errors.category}>
